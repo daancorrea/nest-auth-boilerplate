@@ -16,13 +16,25 @@ import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
+import {
+  CreateUserService,
+  DeleteUserService,
+  ListUserService,
+  UpdateUserService,
+} from './services';
 
 @ApiTags('Users')
 @ApiBearerAuth()
 @Controller('users')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly createUserService: CreateUserService,
+    private readonly deleteUserService: DeleteUserService,
+    private readonly listUserService: ListUserService,
+    private readonly updateUserService: UpdateUserService,
+  ) {}
 
   @Get(':id')
   async findById(@Param() params: ParamsWithId) {
@@ -30,11 +42,11 @@ export class UsersController {
   }
 
   @Get()
-  @Roles('patetao')
+  @Roles('admin')
   @ApiOkResponse({ description: 'Lista de usuários retornada com sucesso' })
   async findAll(@Query() query: PaginationParams) {
     const { skip, limit } = query;
-    return this.usersService.findAll(skip, limit);
+    return this.listUserService.findAll(skip, limit);
   }
 
   @Put(':id')
@@ -42,17 +54,17 @@ export class UsersController {
     @Param() params: ParamsWithId,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    return this.usersService.update(params.id, updateUserDto);
+    return this.updateUserService.update(params.id, updateUserDto);
   }
 
   @Delete(':id')
   @Roles('admin')
   @ApiOkResponse({ description: 'Usuário removido com sucesso' })
   async remove(@Param() params: ParamsWithId) {
-    return this.usersService.remove(params.id);
+    return this.deleteUserService.delete(params.id);
   }
   @Get('search/:email')
   async getUserByEmail(@Param('email') email: string) {
-    return this.usersService.findByEmail(email);
+    return this.listUserService.findByEmail(email);
   }
 }

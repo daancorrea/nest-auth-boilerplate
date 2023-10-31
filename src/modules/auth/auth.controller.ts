@@ -13,15 +13,15 @@ import { LocalAuthGuard } from 'src/common/guards/local-auth.guard';
 import { UserActiveGuard } from 'src/common/guards/user-active.guard';
 import MongooseClassSerializerInterceptor from 'src/common/transformer/mongooseClassSerializer.interceptor';
 import { User } from '../user/models/user.model';
-import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
+import { RegisterService } from './services';
 
 @ApiTags('Auth')
 @Controller('auth')
 @UseInterceptors(MongooseClassSerializerInterceptor(User))
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly registerService: RegisterService) {}
 
   @Post('login')
   @UseGuards(LocalAuthGuard)
@@ -40,7 +40,7 @@ export class AuthController {
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 409, description: 'Conflict' })
   async register(@Body() registerDto: RegisterDto) {
-    return this.authService.register(registerDto);
+    return this.registerService.register(registerDto);
   }
 
   @Get('me')

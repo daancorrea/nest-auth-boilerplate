@@ -5,6 +5,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserSchema } from './models/user.model';
 import { ConfigModule } from '@nestjs/config';
 import { RolesModule } from '../roles/roles.module';
+import {
+  DeleteUserService,
+  ListUserService,
+  UpdateUserPasswordService,
+  UpdateUserService,
+} from './services';
 
 @Module({
   imports: [
@@ -13,7 +19,19 @@ import { RolesModule } from '../roles/roles.module';
     RolesModule,
   ],
   controllers: [UsersController],
-  providers: [UsersService],
-  exports: [UsersService],
+  providers: [
+    UsersService,
+    DeleteUserService,
+    ListUserService,
+    UpdateUserPasswordService,
+    UpdateUserService,
+  ],
+  exports: [
+    UsersService,
+    DeleteUserService,
+    ListUserService,
+    UpdateUserPasswordService,
+    UpdateUserService,
+  ],
 })
 export class UsersModule {}

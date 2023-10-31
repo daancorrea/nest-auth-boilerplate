@@ -16,10 +16,6 @@ export class UsersService {
     private readonly rolesService: RolesService,
   ) {}
 
-  async findByEmail(email: string): Promise<User> {
-    return this.usersModel.findOne({ email }).populate('roles');
-  }
-
   public async findAll(skip = 0, limit?: number) {
     const findQuery = this.usersModel
       .find()
@@ -30,6 +26,10 @@ export class UsersService {
     const data = await findQuery;
     const total = await this.usersModel.countDocuments();
     return { data, meta: paginationMeta(skip, limit, total) };
+  }
+
+  async findByEmail(email: string): Promise<User> {
+    return this.usersModel.findOne({ email }).populate('roles');
   }
 
   async findById(userId: string): Promise<User> {
